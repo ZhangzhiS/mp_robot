@@ -98,6 +98,7 @@ def thief_url(url: str):
         'Content-Type': 'application/json',
     }
     res = requests.post(yqd_api, json=data, headers=headers)
+  
     if res.status_code != 200:
         return url
     data = res.json().get("data")
@@ -105,6 +106,7 @@ def thief_url(url: str):
     if not type:
         return url
     good_info = data.get(type_map.get(good_type, "not_fond"), {})
+    print(good_info)
     if not good_info:
         return url
     good_name = good_info.get("goods_name")
@@ -117,6 +119,7 @@ def thief_url(url: str):
         new_url = f"https://8narnis8.kuaizhan.com/?tkl={tkl}"
         return new_url
     new_url = good_info.get("url")
+    print(good_info)
     if not new_url:
         return url
     return new_url

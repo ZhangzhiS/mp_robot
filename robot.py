@@ -157,8 +157,12 @@ class WechatRobot(object):
             'id': getid(),
             'type': TXT_MSG,
             'content': msg,  # 文本消息内容
-            'wxid': to_wxid   # wxid,
+            'wxid': to_wxid,   # wxid,
+            "roomid":"null",
+            "ext":"null",
+            "nickname":"null"
         }
+        print(qs)
         return json.dumps(qs)
     
     @staticmethod
@@ -220,10 +224,11 @@ class WechatRobot(object):
         from_wxid = msg.get("wxid")
         if from_wxid in self.group_name_complate_ids:
             # 处理转发优惠信息
+            # self.ws.send(self.send_txt_msg(from_wxid, message))
             res = self.parse_msg(message)
             if res:
                 for roomid in self.forward_room_ids:
-                    self.ws.send.send_txt_msg(roomid, res)
+                    self.ws.send(self.send_txt_msg(roomid, res))
         # if from_user == self.
         # self.ws.send(self.send_txt_msg())
     
