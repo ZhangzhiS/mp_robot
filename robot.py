@@ -187,6 +187,8 @@ class WechatRobot(RobotBase):
     def forward_discount_msg(self, text):
         """转发优惠信息"""
         res = ""
+        if "美团" in text or "打车" in text or "唯品会" in text:
+            return
         urls = tools.get_urls(text)
         for url in urls:
             if "kuaizhan" in url:
@@ -219,7 +221,10 @@ class WechatRobot(RobotBase):
         message = msg.get("content")
         from_wxid = msg.get("wxid")
         if from_wxid in self.group_name_complate_ids:
-            self.forward_discount_msg(message)
+            try:
+                self.forward_discount_msg(message)
+            except:
+                pass
 
     def handle_img_msg(self, msg):
         """
