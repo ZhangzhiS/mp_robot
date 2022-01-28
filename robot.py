@@ -59,15 +59,6 @@ class RobotBase(object):
     def heartbeat(self, _):
         pass
 
-    def run(self):
-        websocket.enableTrace(True)
-        self.ws = websocket.WebSocketApp(SERVER,
-                                    on_open=self.on_open,
-                                    on_message=self.on_message,
-                                    on_error=self.on_error,
-                                    on_close=self.on_close)
-        self.ws.run_forever()
-
     def send_msg(
             self,
             msg_type: MessageType,
@@ -227,6 +218,16 @@ class WechatRobot(RobotBase):
         from_wxid = msg.get("wxid")
         if from_wxid in self.score_ids:
             self.search_score(message)
+
+    def run(self):
+        websocket.enableTrace(True)
+        self.ws = websocket.WebSocketApp(SERVER,
+                                    on_open=self.on_open,
+                                    on_message=self.on_message,
+                                    on_error=self.on_error,
+                                    on_close=self.on_close)
+        self.ws.run_forever()
+
     
 
 robot = WechatRobot()
