@@ -8,12 +8,12 @@ from typing import List
 class Settings(object):
     
     GROUP_NAME: List[str] = ["今天coco挨打了吗"]  # 测试群聊
-    # GROUP_NAME_COMPLETE: str = "快乐x星球"
-    GROUP_NAME_COMPLETE: str = "coco"
+    GROUP_NAME_COMPLETE: str = "快乐x星球"
+    # GROUP_NAME_COMPLETE: str = "coco"
     WECHATY_PUPPET_SERVICE_TOKEN: str = "python-wechaty-uos-token"
     WECHATY_PUPPET_SERVICE_ENDPOINT: str = "0.0.0.0:8080"
-    # TO_ROOM_NAME: str = "优惠线报"
-    TO_ROOM_NAME: str = "test_jd"
+    TO_ROOM_NAME: str = "优惠线报"
+    # TO_ROOM_NAME: str = "test_jd"
     MONGODB_URL: str = "mongodb://wechat:a5q0dOJ8@82.156.173.222:27017/?authSource=jd"
     MONGODB_DATABASE: str = "jd"
     BLAKCLIST: List = []
