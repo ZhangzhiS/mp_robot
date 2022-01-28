@@ -14,7 +14,7 @@ import random
 from typing import Optional
 
 import requests
-import httpx
+# import httpx
 from wechaty import Wechaty, Contact, RoomQueryFilter
 from wechaty.user import Message
 from wechaty_puppet import MessageType, ScanStatus

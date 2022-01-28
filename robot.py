@@ -141,6 +141,8 @@ class WechatRobot(RobotBase):
 
     def on_open(self):
         self.get_user_list()
+
+    def heartbeat(self, _):
         self.jd_work()
 
     def on_message(self, message):
@@ -241,38 +243,26 @@ class WechatRobot(RobotBase):
             self.search_score(message)
 
     def jd_work(self):
-        while True:
-            jd_now = requests.get("https://api.m.jd.com/client.action?functionId=queryMaterialProducts&client=wh5").json()
-            now = datetime.datetime.now()
-            next_hour = now + datetime.timedelta(hours=1)
-            push_data = datetime.datetime(
-                next_hour.year, next_hour.month, next_hour.day, next_hour.hour
-            )
-            push_timestamp = int(push_data.timestamp())
-
-            try:
-                sleep_time = push_timestamp - int(jd_now.get("currentTime2"))/1000
-            except:
-                continue
-            logger.info(sleep_time)
-            logger.info(push_timestamp)
-
-            # time.sleep(sleep_time)
-            skus = sync_get_skus(push_timestamp*1000)
-            matcher = build()
-            if skus:
-                for i in skus:
-                    try_id = i.get("try_id")
-                    sku_title = i.get("sku_title")
-                    if check_blacklist(sku_title, matcher):
-                        continue
-                    price = i.get("price")
-                    order_price = i.get("order_price")
-                    try_url = f"https://try.m.jd.com/{try_id}.html"
-                    try_url = tools.exchange_url(try_url)
-                    if not try_url:
-                        continue
-                    desc = f"""京东付费试用
+        now = datetime.datetime.now()
+        push_timestamp = int(time.time())
+        log_print(push_timestamp)
+        if now.minute != 0:
+            return
+        skus = sync_get_skus(push_timestamp*1000)
+        matcher = build()
+        if skus:
+            for i in skus:
+                try_id = i.get("try_id")
+                sku_title = i.get("sku_title")
+                if check_blacklist(sku_title, matcher):
+                    continue
+                price = i.get("price")
+                order_price = i.get("order_price")
+                try_url = f"https://try.m.jd.com/{try_id}.html"
+                try_url = tools.exchange_url(try_url)
+                if not try_url:
+                    continue
+                desc = f"""京东付费试用
 按照自己的需要进行购买，注意价格是否合适，有不少特别便宜的东西
 -------------------
 {sku_title}
@@ -281,9 +271,8 @@ class WechatRobot(RobotBase):
 原价：{price} 
 试用链接地址：{try_url}
 """
-                    for roomid in self.forward_room_ids:
-                        self.send_text_msg(desc, roomid)
-            time.sleep(58*60)
+                for roomid in self.forward_room_ids:
+                    self.send_text_msg(desc, roomid)
 
     def run(self):
         websocket.enableTrace(True)
