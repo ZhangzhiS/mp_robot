@@ -92,7 +92,7 @@ def thief_url(url: str):
     data = {
         "urls": [url]
     }
-    token = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySWQiOjMyNDksImV4cCI6MTY0MTY5OTU3NCwiaWF0IjoxNjM5MTA3NTc0LCJpc3MiOiJoenR1LmNuIiwic3ViIjoidXNlciB0b2tlbiJ9.DgVrbjFjONk9bHKoNYsF055sNWRq1qUZJZ_S6l7LUTU"
+    token = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySWQiOjMyNDksImV4cCI6MTY0NTk0ODc2MywiaWF0IjoxNjQzMzU2NzYzLCJpc3MiOiJoenR1LmNuIiwic3ViIjoidXNlciB0b2tlbiJ9.lovoPwxfLrdUm5iVwllpRFahyWSC2bGeKg5-xnC6Kmk"
     headers = {
         "authorization": token,
         'Content-Type': 'application/json',
