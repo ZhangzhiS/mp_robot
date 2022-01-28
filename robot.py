@@ -4,6 +4,8 @@ import websocket
 import time
 import json
 
+from loguru import logger
+
 from utils import tools
 from settings import settings
 
@@ -12,6 +14,10 @@ SERVER = 'ws://127.0.0.1:5555'
 
 def getid():
     return time.strftime("%Y%m%d%H%M%S", time.localtime(time.time()))
+
+
+def log_print(msg):
+    logger.info(msg)
 
 
 class MessageType(enum.IntEnum):
@@ -142,14 +148,14 @@ class WechatRobot(RobotBase):
         recv_msg = json.loads(message)
         resp_type = recv_msg['type']
         action = {
-            MessageType.CHATROOM_MEMBER_NICK: print,
-            MessageType.PERSONAL_DETAIL: print,
-            MessageType.AT_MSG: print,
-            MessageType.DEBUG_SWITCH: print,
-            MessageType.PERSONAL_INFO: print,
-            MessageType.TXT_MSG: print,
-            MessageType.PIC_MSG: print,
-            MessageType.CHATROOM_MEMBER: print,
+            MessageType.CHATROOM_MEMBER_NICK: log_print,
+            MessageType.PERSONAL_DETAIL: log_print,
+            MessageType.AT_MSG: log_print,
+            MessageType.DEBUG_SWITCH: log_print,
+            MessageType.PERSONAL_INFO: log_print,
+            MessageType.TXT_MSG: log_print,
+            MessageType.PIC_MSG: log_print,
+            MessageType.CHATROOM_MEMBER: log_print,
             MessageType.RECV_PIC_MSG: self.handle_img_msg,
             MessageType.RECV_TXT_MSG: self.handle_text_msg,
             MessageType.HEART_BEAT: self.heartbeat,
