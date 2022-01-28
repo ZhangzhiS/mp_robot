@@ -180,6 +180,9 @@ class WechatRobot(RobotBase):
             else:
                 # 普通联系人，订阅号等
                 pass
+        print("转发id", self.forward_room_ids)
+        print("来源id", self.group_name_complate_ids)
+        print("找谱id", self.score_ids)
 
     def forward_discount_msg(self, text):
         """转发优惠信息"""
