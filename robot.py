@@ -135,6 +135,9 @@ class WechatRobot(RobotBase):
         # 机器人找谱
         self.score_ids = []
 
+    def on_open(self):
+        self.get_user_list()
+
     def on_message(self, message):
         recv_msg = json.loads(message)
         resp_type = recv_msg['type']
