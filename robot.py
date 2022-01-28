@@ -190,10 +190,15 @@ class WechatRobot(RobotBase):
         urls = tools.get_urls(text)
         for url in urls:
             if "kuaizhan" in url:
-                tb_url = tools.get_tb_url(url)
-                if tb_url == url:
+                return
+                # tb_url = tools.get_tb_url(url)
+                # if tb_url == url:
+                #     return
+                # new_url = tools.thief_url(tb_url)
+            elif "pinduoduo" in url:
+                new_url = tools.exchange_url(url)
+                if not new_url:
                     return
-                new_url = tools.thief_url(tb_url)
             else:
                 new_url = tools.thief_url(url)
             if not res:
