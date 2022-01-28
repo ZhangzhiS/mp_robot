@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import enum
 import websocket
 import time
 import json
@@ -6,32 +7,126 @@ import json
 from utils import tools
 from settings import settings
 
-#SERVER = 'ws://192.168.9.113:5555'
 SERVER = 'ws://127.0.0.1:5555'
 
-
-HEART_BEAT = 5005
-RECV_TXT_MSG = 1
-RECV_PIC_MSG = 3
-USER_LIST = 5000
-GET_USER_LIST_SUCCSESS = 5001
-GET_USER_LIST_FAIL = 5002
-TXT_MSG = 555
-PIC_MSG = 500
-AT_MSG = 550
-CHATROOM_MEMBER = 5010
-CHATROOM_MEMBER_NICK = 5020
-PERSONAL_INFO = 6500
-DEBUG_SWITCH = 6000
-PERSONAL_DETAIL = 6550
-DESTROY_ALL = 9999
 
 def getid():
     return time.strftime("%Y%m%d%H%M%S", time.localtime(time.time()))
 
-class WechatRobot(object):
+
+class MessageType(enum.IntEnum):
+    """消息类型"""
+    HEART_BEAT = 5005
+    RECV_TXT_MSG = 1
+    RECV_PIC_MSG = 3
+    USER_LIST = 5000
+    GET_USER_LIST_SUCCSESS = 5001
+    GET_USER_LIST_FAIL = 5002
+    TXT_MSG = 555
+    PIC_MSG = 500
+    AT_MSG = 550
+    CHATROOM_MEMBER = 5010
+    CHATROOM_MEMBER_NICK = 5020
+    PERSONAL_INFO = 6500
+    DEBUG_SWITCH = 6000
+    PERSONAL_DETAIL = 6550
+    DESTROY_ALL = 9999
+
+
+class RobotBase(object):
 
     def __init__(self) -> None:
+        self.ws: websocket.WebSocketApp
+
+    def on_open(self):
+        pass
+
+    def on_message(self, _):
+        pass
+
+    def on_error(self, _):
+        pass
+    
+    def on_close(self):
+        pass
+    
+    def heartbeat(self, _):
+        pass
+
+    def run(self):
+        websocket.enableTrace(True)
+        self.ws = websocket.WebSocketApp(SERVER,
+                                    on_open=self.on_open,
+                                    on_message=self.on_message,
+                                    on_error=self.on_error,
+                                    on_close=self.on_close)
+        self.ws.run_forever()
+
+    def send_msg(
+            self,
+            msg_type: MessageType,
+            msg: str,
+            to_wxid: str,
+            to_room_id: str,
+            nickname: str,
+        ):
+        """
+        给WS服务发送请求
+        """
+        msg_content = {
+            'id': getid(),
+            'type': msg_type.value,
+            'content': msg,  # 文本消息内容
+            'wxid': to_wxid,   # wxid,
+            "roomid":to_room_id,
+            "nickname":nickname,
+            "ext":"null",
+        }
+        msg = json.dumps(msg_content)
+        self.ws.send(msg)
+
+    def send_text_msg(
+            self,
+            msg,
+            to_wxid,
+        ):
+        """
+        发送文本消息，wxid可以是用户id或者是群聊id
+        """
+        self.send_msg(
+                MessageType.TXT_MSG,
+                msg,
+                to_wxid,
+                to_room_id="null",
+                nickname="null",
+            )
+    def send_img_msg(
+            self,
+            img_path,
+            to_wxid
+        ):
+        """
+        发送图片消息
+        """
+        self.send_msg(
+                MessageType.PIC_MSG,
+                img_path,
+                to_wxid,
+                to_room_id="null",
+                nickname="null"
+                )
+
+    def get_user_list(self):
+        """
+        获取好友列表
+        """
+        self.send_msg(MessageType.USER_LIST, "user list", "null", "", "")
+
+
+class WechatRobot(RobotBase):
+
+    def __init__(self) -> None:
+        super(RobotBase).__init__()
         # 需要转发的群
         self.forward_room_ids = []
         # 憨憨群
@@ -40,168 +135,54 @@ class WechatRobot(object):
         self.wx = None
         # 优惠信息群
         self.group_name_complate_ids = []
+        # 机器人找谱
+        self.score_ids = []
 
+    def on_message(self, message):
+        recv_msg = json.loads(message)
+        resp_type = recv_msg['type']
+        action = {
+            MessageType.CHATROOM_MEMBER_NICK: print,
+            MessageType.PERSONAL_DETAIL: print,
+            MessageType.AT_MSG: print,
+            MessageType.DEBUG_SWITCH: print,
+            MessageType.PERSONAL_INFO: print,
+            MessageType.TXT_MSG: print,
+            MessageType.PIC_MSG: print,
+            MessageType.CHATROOM_MEMBER: print,
+            MessageType.RECV_PIC_MSG: self.handle_img_msg,
+            MessageType.RECV_TXT_MSG: self.handle_text_msg,
+            MessageType.HEART_BEAT: self.heartbeat,
+            MessageType.USER_LIST: self.handle_wxuser_list,
+            MessageType.GET_USER_LIST_SUCCSESS: self.handle_wxuser_list,
+            MessageType.GET_USER_LIST_FAIL: self.handle_wxuser_list,
+        }
+        action.get(resp_type, print)(recv_msg)
+    
+    def handle_wxuser_list(self, msg):
+        """
+        处理微信好友列表，记录需要转发的相关联系人的id
+        """
+        wx_user_list = msg["content"]
+        for item in wx_user_list:
+            wxid = item["wxid"] 
+            if "@" in wxid:
+                # 微信群
+                if item["name"] == settings.TO_ROOM_NAME:
+                    # 优惠信息转发
+                    self.forward_room_ids.append(wxid)
+                elif item["name"] == settings.GROUP_NAME_COMPLETE:
+                    # 优惠信息来源
+                    self.group_name_complate_ids.append(wxid)
+                elif settings.SCORE_NAME_COMPLETE in item["name"]:
+                    # 找谱群
+                    self.score_ids.append(wxid)
+            else:
+                # 普通联系人，订阅号等
+                pass
 
-    @staticmethod
-    def get_chat_nick_p(roomid):
-        qs = {
-            'id': getid(),
-            'type': CHATROOM_MEMBER_NICK,
-            'content': roomid,
-            'wxid': 'ROOT',
-        }
-        s = json.dumps(qs)
-        return s
-    
-    @staticmethod
-    def debug_switch():
-        qs = {
-            'id': getid(),
-            'type': DEBUG_SWITCH,
-            'content': 'off',
-            'wxid': 'ROOT',
-        }
-        s = json.dumps(qs)
-        return s
-    
-    @staticmethod
-    def handle_nick(j):
-        data = j.content
-        i = 0
-        for d in data:
-            print(d.nickname)
-            i += 1
-    
-    @staticmethod
-    def hanle_memberlist(j):
-        data = j.content
-        i = 0
-        for d in data:
-            print(d.roomid)
-            i += 1
-    
-    @staticmethod
-    def get_chatroom_memberlist():
-        qs = {
-            'id': getid(),
-            'type': CHATROOM_MEMBER,
-            'wxid': 'null',
-            'content': 'op:list member ',
-        }
-        s = json.dumps(qs)
-        return s
-    
-    @staticmethod
-    def send_at_meg(roomid, nickname):
-        qs = {
-            'id': getid(),
-            'type': AT_MSG,
-            'roomid': roomid, # not null
-            'content': '我能吞下玻璃而不伤身体',
-            'nickname': '[微笑]Python',
-        }
-        s = json.dumps(qs)
-        return s
-    
-    @staticmethod
-    def destroy_all():
-        qs = {
-            'id': getid(),
-            'type': DESTROY_ALL,
-            'content': 'none',
-            'wxid': 'node',
-        }
-        s = json.dumps(qs)
-        return s
-    
-    @staticmethod
-    def send_pic_msg():
-        qs = {
-            'id': getid(),
-            'type': PIC_MSG,
-            'content': 'C:\\Users\\14988\\Desktop\\temp\\2.jpg',
-            'wxid': '获取的wxid',
-        }
-        s = json.dumps(qs)
-        return s
-    
-    @staticmethod
-    def get_personal_detail():
-        qs = {
-            'id': getid(),
-            'type': PERSONAL_DETAIL,
-            'content': 'op:personal detail',
-            'wxid': '获取的wxid',
-        }
-        s = json.dumps(qs)
-        return s
-    
-    @staticmethod
-    def get_personal_info():
-        qs = {
-            'id': getid(),
-            'type': PERSONAL_INFO,
-            'content': 'op:personal info',
-            'wxid': 'ROOT',
-        }
-        s = json.dumps(qs)
-        return s
-    
-    @staticmethod
-    def send_txt_msg(to_wxid, msg):
-        '''
-        发送消息给好友
-        to_wxid 可以是roomid
-        '''
-        qs = {
-            'id': getid(),
-            'type': TXT_MSG,
-            'content': msg,  # 文本消息内容
-            'wxid': to_wxid,   # wxid,
-            "roomid":"null",
-            "ext":"null",
-            "nickname":"null"
-        }
-        print(qs)
-        return json.dumps(qs)
-    
-    @staticmethod
-    def send_wxuser_list():
-        '''
-        获取微信通讯录用户名字和wxid
-        '''
-        qs = {
-            'id': getid(),
-            'type': USER_LIST,
-            'content': 'user list',
-            'wxid': 'null',
-        }
-        s = json.dumps(qs)
-        return s
-    
-    def handle_wxuser_list(self, j):
-        j_ary = j['content']
-        i = 0
-        #微信群
-        for item in j_ary:
-            i += 1
-            id = item['wxid']
-            m = id.find('@')
-            if settings.TO_ROOM_NAME == item["name"]:
-                self.forward_room_ids.append(id)
-            elif settings.GROUP_NAME_COMPLETE == item["name"]:
-                self.group_name_complate_ids.append(id)
-            if m != -1:
-                print(i, id, item['name'])
-        #微信其他好友，公众号等
-        for item in j_ary:
-            i += 1
-            id = item['wxid']
-            m = id.find('@')
-            if m == -1:
-                print(i, id, item['name'])
-    
-    def parse_msg(self, text):
+    def forward_discount_msg(self, text):
+        """转发优惠信息"""
         res = ""
         urls = tools.get_urls(text)
         for url in urls:
@@ -216,69 +197,31 @@ class WechatRobot(object):
                 res = text.replace(url, new_url)
             else:
                 res = res.replace(url, new_url)
-        return res
-    
-    # @staticmethod
-    def handle_recv_msg(self, msg):
+        if res:
+            for roomid in self.forward_room_ids:
+                self.send_text_msg(res, roomid)
+
+    def search_score(self, message):
+        pass
+
+    def handle_text_msg(self, msg):
+        """
+        处理收到的文本消息
+        """
         message = msg.get("content")
         from_wxid = msg.get("wxid")
         if from_wxid in self.group_name_complate_ids:
-            # 处理转发优惠信息
-            # self.ws.send(self.send_txt_msg(from_wxid, message))
-            res = self.parse_msg(message)
-            if res:
-                for roomid in self.forward_room_ids:
-                    self.ws.send(self.send_txt_msg(roomid, res))
-        # if from_user == self.
-        # self.ws.send(self.send_txt_msg())
-    
-    @staticmethod
-    def heartbeat(j):
-        pass
-        # print(j['content'])
-    
-    
-    # @staticmethod
-    def on_open(self):
-        self.ws.send(self.send_wxuser_list())     # 获取微信通讯录好友列表
-    
-    def on_message(self, message):
-        j = json.loads(message)
-        resp_type = j['type']
-        action = {
-            CHATROOM_MEMBER_NICK: self.handle_nick,
-            PERSONAL_DETAIL: print,
-            AT_MSG: print,
-            DEBUG_SWITCH: print,
-            PERSONAL_INFO: print,
-            TXT_MSG: print,
-            PIC_MSG: print,
-            CHATROOM_MEMBER: self.hanle_memberlist,
-            RECV_PIC_MSG: self.handle_recv_msg,
-            RECV_TXT_MSG: self.handle_recv_msg,
-            HEART_BEAT: self.heartbeat,
-            USER_LIST: self.handle_wxuser_list,
-            GET_USER_LIST_SUCCSESS: self.handle_wxuser_list,
-            GET_USER_LIST_FAIL: self.handle_wxuser_list,
-        }
-        action.get(resp_type, print)(j)
-    
-    
-    def on_error(self, error):
-        print(error)
-    
-    
-    def on_close(self):
-        print("closed")
+            self.forward_discount_msg(message)
 
-    def run(self):
-        websocket.enableTrace(True)
-        self.ws = websocket.WebSocketApp(SERVER,
-                                    on_open=self.on_open,
-                                    on_message=self.on_message,
-                                    on_error=self.on_error,
-                                    on_close=self.on_close)
-        self.ws.run_forever()
+    def handle_img_msg(self, msg):
+        """
+        处理收到的图片消息
+        """
+        message = msg.get("content")
+        from_wxid = msg.get("wxid")
+        if from_wxid in self.score_ids:
+            self.search_score(message)
+    
 
 robot = WechatRobot()
 robot.run()

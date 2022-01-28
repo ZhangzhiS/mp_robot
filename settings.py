@@ -26,6 +26,16 @@ class Settings(object):
     headers: dict = {}
 
 
+    SCORE_NAME_COMPLETE: str = "机器人找谱"
+    SEARCH_SCORE_HOST: str = "http://score-image-search-client.ai-k8s.xiaoyezi.com"
+    WECHATY_PUPPET_SERVICE_TOKEN: str = "python-wechaty-uos-token"
+    WECHATY_PUPPET_SERVICE_ENDPOINT: str = "0.0.0.0:8080"
+    #WECHATY_LOG_FILE: str = "/data/logs/score-robot/score-robot-prod/robot.log"
+    DSS_HOST: str = "https://dss-pre.xiongmaopeilian.com"
+    TOKEN_FILE: str = "token.json"
+
+
+
 settings = Settings()
 
 settings.cookies = json.load(open(settings.cookies_path))
