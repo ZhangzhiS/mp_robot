@@ -244,10 +244,21 @@ class WechatRobot(RobotBase):
 
     def jd_work(self):
         now = datetime.datetime.now()
-        push_timestamp = int(time.time())
-        log_print(push_timestamp)
-        if now.minute != 0:
+        now_timestamp = int(time.time())
+        log_print(now_timestamp)
+        next_hour = now + datetime.timedelta(hours=1)
+        push_data = datetime.datetime(
+            next_hour.year, next_hour.month, next_hour.day, next_hour.hour
+        )
+        push_timestamp = int(push_data.timestamp())
+        if push_timestamp - now_timestamp > 15:
             return
+        jd_now = requests.get("https://api.m.jd.com/client.action?functionId=queryMaterialProducts&client=wh5").json()
+        try:
+            sleep_time = push_timestamp - int(jd_now.get("currentTime2"))/1000
+        except:
+            return
+        time.sleep(sleep_time)
         skus = sync_get_skus(push_timestamp*1000)
         matcher = build()
         if skus:
