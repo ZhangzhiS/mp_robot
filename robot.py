@@ -260,6 +260,8 @@ class WechatRobot(RobotBase):
             return
         time.sleep(sleep_time)
         skus = sync_get_skus(push_timestamp*1000)
+        log_print("PUSH JD SKUS")
+        log_print(skus)
         matcher = build()
         if skus:
             for i in skus:
