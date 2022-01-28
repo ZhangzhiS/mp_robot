@@ -33,6 +33,7 @@ class Settings(object):
     #WECHATY_LOG_FILE: str = "/data/logs/score-robot/score-robot-prod/robot.log"
     DSS_HOST: str = "https://dss-pre.xiongmaopeilian.com"
     TOKEN_FILE: str = "token.json"
+    Y_TOKEN = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySWQiOjMyNDksImV4cCI6MTY0NTk0ODc2MywiaWF0IjoxNjQzMzU2NzYzLCJpc3MiOiJoenR1LmNuIiwic3ViIjoidXNlciB0b2tlbiJ9.lovoPwxfLrdUm5iVwllpRFahyWSC2bGeKg5-xnC6Kmk"
 
 
 
