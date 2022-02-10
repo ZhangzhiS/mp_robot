@@ -219,6 +219,7 @@ class WechatRobot(RobotBase):
                 self.send_text_msg(res, roomid)
 
     def search_score(self, message):
+        print(message)
         pass
 
     def handle_text_msg(self, msg):
