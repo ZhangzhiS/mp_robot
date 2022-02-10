@@ -273,7 +273,7 @@ class WechatRobot(RobotBase):
                 price = i.get("price")
                 order_price = i.get("order_price")
                 try_url = f"https://try.m.jd.com/{try_id}.html"
-                try_url = tools.exchange_url(try_url)
+                # try_url = tools.exchange_url(try_url)
                 if not try_url:
                     continue
                 desc = f"""京东付费试用
