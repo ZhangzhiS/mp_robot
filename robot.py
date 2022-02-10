@@ -238,6 +238,7 @@ class WechatRobot(RobotBase):
         """
         处理收到的图片消息
         """
+        print(msg)
         message = msg.get("content")
         from_wxid = msg.get("wxid")
         if from_wxid in self.score_ids:
