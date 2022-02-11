@@ -251,6 +251,7 @@ ScoreId：{search_res.get("score_id")}
 """
             self.send_text_msg(score_info, wxid)
             self.send_img_msg(tmp_img, wxid)
+            time.sleep(1)
 
     def handle_text_msg(self, msg):
         """
