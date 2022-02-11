@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 # a5q0dOJ8
 import json
+from pathlib import Path
 from typing import List
 
 
@@ -35,7 +36,7 @@ class Settings(object):
     TOKEN_FILE: str = "token.json"
     Y_TOKEN = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySWQiOjMyNDksImV4cCI6MTY0NTk0ODc2MywiaWF0IjoxNjQzMzU2NzYzLCJpc3MiOiJoenR1LmNuIiwic3ViIjoidXNlciB0b2tlbiJ9.lovoPwxfLrdUm5iVwllpRFahyWSC2bGeKg5-xnC6Kmk"
     
-    wechat_path = "C:\\Users\\Administrator\\Documents\\WeChat Files"
+    wechat_path = Path("C:\\Users\\Administrator\\Documents\\WeChat Files")
 
 
 
