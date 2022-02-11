@@ -235,6 +235,7 @@ class WechatRobot(RobotBase):
             time.sleep(1)
         decode_img = WechatConvert().convert(path)
         score_list = DssClient.search_score(decode_img)
+        log_print(score_list)
         res = DssClient.get_score(score_list)
         if not res:
             self.send_text_msg("未搜索到曲谱", wxid)
