@@ -27,7 +27,7 @@ class Settings(object):
     headers: dict = {}
 
 
-    SCORE_NAME_COMPLETE: str = "coco"
+    SCORE_NAME_COMPLETE: str = "机器人找谱"
     SEARCH_SCORE_HOST: str = "http://score-image-search-client.ai-k8s.xiaoyezi.com"
     WECHATY_PUPPET_SERVICE_TOKEN: str = "python-wechaty-uos-token"
     WECHATY_PUPPET_SERVICE_ENDPOINT: str = "0.0.0.0:8080"
