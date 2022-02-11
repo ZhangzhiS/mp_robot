@@ -226,6 +226,11 @@ class WechatRobot(RobotBase):
         thumb = message.get("detail")
         path = os.path.join(settings.wechat_path, thumb)
         log_print(path)
+        c = 5
+        while c:
+            c -= 1
+            log_print(os.path.exists(path))
+            time.sleep(1)
         decode_img = WechatConvert().convert(path)
         score_list = DssClient.search_score(decode_img)
         res = DssClient.get_score(score_list)
