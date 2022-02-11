@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
 import enum
+import os
+from de_img import WechatConvert
+from utils.score import DssClient
 import websocket
 import time
 import json
@@ -157,8 +160,8 @@ class WechatRobot(RobotBase):
             MessageType.TXT_MSG: log_print,
             MessageType.PIC_MSG: log_print,
             MessageType.CHATROOM_MEMBER: log_print,
-            # MessageType.RECV_PIC_MSG: self.handle_img_msg,
-            MessageType.RECV_PIC_MSG: log_print,
+            MessageType.RECV_PIC_MSG: self.handle_img_msg,
+            # MessageType.RECV_PIC_MSG: log_print,
             MessageType.RECV_TXT_MSG: self.handle_text_msg,
             MessageType.HEART_BEAT: self.heartbeat,
             MessageType.USER_LIST: self.handle_wxuser_list,
@@ -219,9 +222,27 @@ class WechatRobot(RobotBase):
             for roomid in self.forward_room_ids:
                 self.send_text_msg(res, roomid)
 
-    def search_score(self, message):
-        print(message)
-        pass
+    def search_score(self, message, wxid):
+        thumb = message.get("thumb")
+        path = os.path.join(settings.wechat_path, thumb)
+        log_print(path)
+        decode_img = WechatConvert().convert(path, "tmp")
+        score_list = DssClient.search_score(decode_img)
+        res = DssClient.get_score(score_list)
+        if not res:
+            self.send_text_msg("未搜索到曲谱", wxid)
+
+        image_list = res.get("data").get("images")
+        for search_res in image_list[:2]:
+            tmp_img = DssClient.download_img_local(search_res.get("res"))
+            score_info = f"""
+合集名称：{search_res.get("name")}
+曲谱名称：{search_res.get("collection_name")}
+ScoreId：{search_res.get("score_id")}
+页码：{search_res.get("page")}
+"""
+            self.send_text_msg(score_info, wxid)
+            self.send_img_msg(tmp_img, wxid)
 
     def handle_text_msg(self, msg):
         """
@@ -239,11 +260,10 @@ class WechatRobot(RobotBase):
         """
         处理收到的图片消息
         """
-        print(msg)
         message = msg.get("content")
         from_wxid = msg.get("wxid")
         if from_wxid in self.score_ids:
-            self.search_score(message)
+            self.search_score(message, from_wxid)
 
     def jd_work(self):
         now = datetime.datetime.now()

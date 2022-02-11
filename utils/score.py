@@ -63,7 +63,7 @@ class DssClient(object):
         return result
     
     @classmethod
-    def search_score(image):
+    def search_score(cls, image):
         """搜索曲谱：上传图片接口"""
         files = {"file": image}
         data = {
@@ -106,4 +106,14 @@ class DssClient(object):
         if not image_list:
             raise SearchError("未搜索到该曲谱")
         return search_result.get("data")
+
+    @classmethod
+    def download_img_local(cls, url):
+        content = requests.get(url).content
+        file = f"{int(time.time())}.jpg"
+        new_path = os.path.join(os.getcwd(), "tmp")
+        new_path = os.path.join(new_path, file)
+        with open(new_path, "wb") as w:
+            w.write(content)
+        return new_path
 

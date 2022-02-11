@@ -26,7 +26,7 @@ class Settings(object):
     headers: dict = {}
 
 
-    SCORE_NAME_COMPLETE: str = "机器人找谱"
+    SCORE_NAME_COMPLETE: str = "coco"
     SEARCH_SCORE_HOST: str = "http://score-image-search-client.ai-k8s.xiaoyezi.com"
     WECHATY_PUPPET_SERVICE_TOKEN: str = "python-wechaty-uos-token"
     WECHATY_PUPPET_SERVICE_ENDPOINT: str = "0.0.0.0:8080"
@@ -34,6 +34,8 @@ class Settings(object):
     DSS_HOST: str = "https://dss-pre.xiongmaopeilian.com"
     TOKEN_FILE: str = "token.json"
     Y_TOKEN = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySWQiOjMyNDksImV4cCI6MTY0NTk0ODc2MywiaWF0IjoxNjQzMzU2NzYzLCJpc3MiOiJoenR1LmNuIiwic3ViIjoidXNlciB0b2tlbiJ9.lovoPwxfLrdUm5iVwllpRFahyWSC2bGeKg5-xnC6Kmk"
+    
+    wechat_path = "C:\\Users\\Administrator\\Documents\\WeChat Files"
 
 
 
