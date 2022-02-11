@@ -260,6 +260,7 @@ ScoreId：{search_res.get("score_id")}
         """
         处理收到的图片消息
         """
+        log_print(msg)
         message = msg.get("content")
         from_wxid = msg.get("wxid")
         if from_wxid in self.score_ids:
