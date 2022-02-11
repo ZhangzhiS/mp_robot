@@ -57,4 +57,5 @@ class WechatConvert(object):
 
 if __name__ == '__main__':
     # res = WechatConvert().convert("./res/fca060dfcfa9ddc0f104f7badbda5992.dat")
-    WechatConvert().convert("C:\\Users\\Administrator\\Documents\\WeChat Files\\wxid_qbd73k1vfp9x22\\FileStorage\\Image\\2022-02\\636ca221139f0bdf116c4cc5fb6aac4f.dat")
+
+    WechatConvert().convert("C:/Users/Administrator/Documents/WeChat Files/wxid_qbd73k1vfp9x22/FileStorage/Image/2022-02/636ca221139f0bdf116c4cc5fb6aac4f.dat")
