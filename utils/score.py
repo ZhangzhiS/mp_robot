@@ -16,7 +16,7 @@ class DssClient(object):
     @classmethod
     def get_score(cls, data):
         uri = "student_app/opn/music_score_search"
-        url = os.path.join(settings.DSS_HOST, uri)
+        url = settings.DSS_HOST+uri
         with open(settings.TOKEN_FILE, "r") as f:
             info = json.load(f)
         token = info.get("data").get("token")

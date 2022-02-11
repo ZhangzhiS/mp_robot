@@ -32,7 +32,7 @@ class Settings(object):
     WECHATY_PUPPET_SERVICE_TOKEN: str = "python-wechaty-uos-token"
     WECHATY_PUPPET_SERVICE_ENDPOINT: str = "0.0.0.0:8080"
     #WECHATY_LOG_FILE: str = "/data/logs/score-robot/score-robot-prod/robot.log"
-    DSS_HOST: str = "https://dss.xiongmaopeilian.com"
+    DSS_HOST: str = "https://dss.xiongmaopeilian.com/"
     TOKEN_FILE: str = "token.json"
     Y_TOKEN = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySWQiOjMyNDksImV4cCI6MTY0NTk0ODc2MywiaWF0IjoxNjQzMzU2NzYzLCJpc3MiOiJoenR1LmNuIiwic3ViIjoidXNlciB0b2tlbiJ9.lovoPwxfLrdUm5iVwllpRFahyWSC2bGeKg5-xnC6Kmk"
     
