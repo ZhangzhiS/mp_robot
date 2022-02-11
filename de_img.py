@@ -5,6 +5,7 @@
 # 微信.bat 16进制 a1 86----->jpg  ab 8c----jpg     dd 04 --->png
 # 自动计算异或 值
 import os
+from pathlib import Path
 import sys
 from enum import Enum
 
@@ -41,6 +42,7 @@ class WechatConvert(object):
         # 获取图片类型
         _,img_xor = WechatConvert.find_img_type(file_path)
         res = b""
+        file_path = Path(file_path)
         with open(file_path, 'rb') as fd:
             while True:
                 b = fd.read(1)
