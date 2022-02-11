@@ -37,11 +37,11 @@ class WechatConvert(object):
     def hex_to_tuple(img_type):
         return img_type >> 8, img_type & 0b11111111
 
-    def convert(self, file_path, output_path="."):
+    def convert(self, file_path):
         # 获取图片类型
-        img_type,img_xor = WechatConvert.find_img_type(file_path)
+        _,img_xor = WechatConvert.find_img_type(file_path)
         res = b""
-        with open(file_path, 'rb+') as fd:
+        with open(file_path, 'rb') as fd:
             while True:
                 b = fd.read(1)
                 if not b:
