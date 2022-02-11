@@ -21,7 +21,7 @@ class DssClient(object):
             info = json.load(f)
         token = info.get("data").get("token")
         headers = {"token": token, "version": "1"}
-        logger.info(headers)
+        logger.info(url)
         resp = requests.post(url, json=data, headers=headers)
         logger.info(resp)
         if resp.status_code != 200:
