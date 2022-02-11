@@ -223,7 +223,7 @@ class WechatRobot(RobotBase):
                 self.send_text_msg(res, roomid)
 
     def search_score(self, message, wxid):
-        thumb = message.get("thumb")
+        thumb = message.get("detail")
         path = os.path.join(settings.wechat_path, thumb)
         log_print(path)
         decode_img = WechatConvert().convert(path, "tmp")
@@ -262,7 +262,7 @@ ScoreId：{search_res.get("score_id")}
         """
         log_print(msg)
         message = msg.get("content")
-        from_wxid = msg.get("wxid")
+        from_wxid = message.get("id1")
         if from_wxid in self.score_ids:
             self.search_score(message, from_wxid)
 
