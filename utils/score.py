@@ -3,6 +3,7 @@ import time
 import json
 import requests
 from settings import settings
+from loguru import logger
 
 
 class SearchError(Exception):
@@ -20,7 +21,9 @@ class DssClient(object):
             info = json.load(f)
         token = info.get("data").get("token")
         headers = {"token": token, "version": "1"}
+        logger.info(headers)
         resp = requests.post(url, json=data, headers=headers)
+        logger.info(resp)
         if resp.status_code != 200:
             raise SearchError("DSS 相关服务异常")
         result = resp.json()
