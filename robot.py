@@ -226,9 +226,7 @@ class WechatRobot(RobotBase):
         thumb = message.get("detail")
         path = os.path.join(settings.wechat_path, thumb)
         log_print(path)
-        c = 5
-        while c:
-            c -= 1
+        while os.path.exists(path):
             log_print(os.path.exists(path))
             time.sleep(1)
         decode_img = WechatConvert().convert(path)
