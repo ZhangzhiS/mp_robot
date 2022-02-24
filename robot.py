@@ -226,7 +226,7 @@ class WechatRobot(RobotBase):
         thumb = message.get("detail")
         path = os.path.join(settings.wechat_path, thumb)
         log_print(path)
-        c = 5
+        c = 10
         while c:
             log_print(os.path.exists(path))
             if os.path.exists(path):
