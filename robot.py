@@ -242,6 +242,7 @@ class WechatRobot(RobotBase):
 
         image_list = res.get("data").get("images")
         for search_res in image_list[:2]:
+            log_print(search_res)
             tmp_img = DssClient.download_img_local(search_res.get("res"))
             score_info = f"""
 合集名称：{search_res.get("name")}
