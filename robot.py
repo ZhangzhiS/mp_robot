@@ -241,6 +241,8 @@ class WechatRobot(RobotBase):
             self.send_text_msg("未搜索到曲谱", wxid)
 
         image_list = res.get("data").get("images")
+        if not image_list[:2]:
+            self.send_text_msg("未搜索到曲谱", wxid)
         for search_res in image_list[:2]:
             log_print(search_res)
             tmp_img = DssClient.download_img_local(search_res.get("res"))
