@@ -34,7 +34,7 @@ class Settings(object):
     #WECHATY_LOG_FILE: str = "/data/logs/score-robot/score-robot-prod/robot.log"
     DSS_HOST: str = "https://dss.xiongmaopeilian.com/"
     TOKEN_FILE: str = "token.json"
-    Y_TOKEN = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySWQiOjMyNDksImV4cCI6MTY0NTk0ODc2MywiaWF0IjoxNjQzMzU2NzYzLCJpc3MiOiJoenR1LmNuIiwic3ViIjoidXNlciB0b2tlbiJ9.lovoPwxfLrdUm5iVwllpRFahyWSC2bGeKg5-xnC6Kmk"
+    Y_TOKEN = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySWQiOjMyNDksImV4cCI6MTY0ODg4ODM1NSwiaWF0IjoxNjQ2Mjk2MzU1LCJpc3MiOiJoenR1LmNuIiwic3ViIjoidXNlciB0b2tlbiJ9.egLTUelF0sTibLlO7LBUthuY-2pnNaVI7Pm2L5UjD9Y"
     
     wechat_path = Path("C:\\Users\\Administrator\\Documents\\WeChat Files")
 
