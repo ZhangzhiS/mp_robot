@@ -189,6 +189,8 @@ class WechatRobot(RobotBase):
                     # 找谱群
                     self.score_ids.append(wxid)
             else:
+                if item["name"] == "张智":
+                    self.group_name_complate_ids.append(wxid)
                 # 普通联系人，订阅号等
                 pass
         print("转发id", self.forward_room_ids)
