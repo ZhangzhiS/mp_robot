@@ -182,6 +182,8 @@ class WechatRobot(RobotBase):
                 if item["name"] == settings.TO_ROOM_NAME:
                     # 优惠信息转发
                     self.forward_room_ids.append(wxid)
+                elif item["name"] == settings.TO_ROOM_NAME1:
+                    self.forward_room_ids.append(wxid)
                 elif item["name"] == settings.GROUP_NAME_COMPLETE:
                     # 优惠信息来源
                     self.group_name_complate_ids.append(wxid)
